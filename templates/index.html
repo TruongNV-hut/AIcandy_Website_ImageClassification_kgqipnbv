@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AIcandy.vn - Image Classification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .title {
+            color: blue;
+            margin-bottom: 20px;
+        }
+        .image-container {
+            width: 500px;
+            height: 500px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #preview {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .result-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .result-label {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .result-value {
+            font-size: 24px;
+            margin-left: 10px;
+        }
+        input[type="file"] {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">AIcandy.vn - Image Classification</h1>
+        <input type="file" id="imageInput" accept=".jpg, .png">
+        <div class="image-container">
+            <img id="preview" style="display: none;">
+        </div>
+        <div class="result-container">
+            <span class="result-label" id="status-label">Result:</span>
+            <span id="result" class="result-value"></span>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const allowedExtensions = ['image/jpeg', 'image/png'];
+                if (!allowedExtensions.includes(file.type)) {
+                    alert('Chỉ hỗ trợ các file JPG hoặc PNG.');
+                    return;
+                }
+
+                const preview = document.getElementById('preview');
+                preview.style.display = 'block';
+                preview.src = URL.createObjectURL(file);
+
+                const resultDiv = document.getElementById('result');
+                const statusLabel = document.getElementById('status-label');
+                resultDiv.textContent = ""; // Clear previous result
+                statusLabel.textContent = "Processing";
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    statusLabel.textContent = "Results:";
+                    resultDiv.textContent = data.class;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error processing image');
+                    statusLabel.textContent = "Result:";
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
