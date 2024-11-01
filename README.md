@@ -39,9 +39,9 @@ python AIcandy_website_app_rvemyich.py
 ```
 
 ### Video Demo
-```bash
-Youtube: 
-```
+
+Youtube: https://youtu.be/m6bDvYWgyLg
+
 
 ### More Information
 
